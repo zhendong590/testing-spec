@@ -314,6 +314,7 @@ export interface EnvironmentConfig {
   scheme?: string;
   host?: string;
   port?: string | number;
+  base_path?: string;
   variables?: Record<string, string>;
 }
 

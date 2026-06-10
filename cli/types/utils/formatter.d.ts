@@ -28,6 +28,18 @@ export interface FormattedTestResult {
         type: string;
         message: string;
     }>;
+    request?: {
+        method: string;
+        url: string;
+        headers?: Record<string, string>;
+        body?: unknown;
+    };
+    response?: {
+        status?: number;
+        headers?: Record<string, string | string[]>;
+        body?: unknown;
+        responseTime?: number;
+    };
 }
 export declare function formatTestResult(result: FormattedTestResult, verbose?: boolean): string;
 export declare function formatTestSummary(summary: TestResultSummary): string;

@@ -54,7 +54,8 @@ http:
     username: test
     password: pass123
 assertions:
-  - type: status_code
+  - type: json_path
+    expression: "$.status"
     expected: 200
 `;
       const testCases = parseTestCasesFromString(yaml);
@@ -89,7 +90,8 @@ http:
   method: GET
   path: /api/users/\${userId}
 assertions:
-  - type: status_code
+  - type: json_path
+    expression: "$.status"
     expected: 200
 `;
       const testCases = parseTestCasesFromString(yaml);
@@ -114,7 +116,8 @@ http:
   method: GET
   path: /api/test
 assertions:
-  - type: status_code
+  - type: json_path
+    expression: "$.status"
     expected: 200
 `;
       const testCases = parseTestCasesFromString(yaml);
@@ -144,7 +147,8 @@ lifecycle:
       vars:
         userId: $.data.id
 assertions:
-  - type: status_code
+  - type: json_path
+    expression: "$.status"
     expected: 200
 `;
       const testCases = parseTestCasesFromString(yaml);

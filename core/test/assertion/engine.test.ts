@@ -189,7 +189,7 @@ describe('assertion/engine', () => {
   describe('getAssertionSummary', () => {
     it('should calculate summary correctly', () => {
       const results = [
-        { passed: true, type: 'status_code', message: 'ok' },
+        { passed: true, type: 'json_path', message: 'ok' },
         { passed: true, type: 'json_path', message: 'ok' },
         { passed: false, type: 'json_path', message: 'failed' }
       ];
@@ -213,7 +213,7 @@ describe('assertion/engine', () => {
 
     it('should calculate 100% pass rate', () => {
       const results = [
-        { passed: true, type: 'status_code', message: 'ok' },
+        { passed: true, type: 'response_time', message: 'ok' },
         { passed: true, type: 'json_path', message: 'ok' }
       ];
       
