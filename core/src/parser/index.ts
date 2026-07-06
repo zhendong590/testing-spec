@@ -167,8 +167,10 @@ function buildBaseUrl(envConfig: EnvironmentConfig): string {
   if (port && port !== '443' && port !== '80' && port !== 443 && port !== 80) {
     url += `:${port}`;
   }
-  if (envConfig.variables?.base_path) {
-    url += envConfig.variables.base_path;
+  // 兼容两种位置：environment.base_path 或 environment.variables.base_path
+  const basePath = (envConfig as any).base_path || envConfig.variables?.base_path;
+  if (basePath) {
+    url += basePath;
   }
   
   return url;

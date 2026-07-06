@@ -81,6 +81,15 @@ export interface ProxyTestResult {
     assertions?: ProxyAssertionResult[];
     /** Error message if failed */
     error?: string;
+    /** Response details */
+    response?: {
+        status?: number;
+        statusCode?: number;
+        headers?: Record<string, string | string[]>;
+        body?: unknown;
+        responseTime?: number;
+        duration?: number;
+    };
 }
 /**
  * Run summary

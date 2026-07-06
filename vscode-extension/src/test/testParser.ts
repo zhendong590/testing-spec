@@ -184,9 +184,6 @@ export class TestParser {
     const type = assertion.type as string;
     
     switch (type) {
-      case 'status_code':
-        return `Status code is ${assertion.expected || '?'}`;
-      
       case 'json_path': {
         const expr = assertion.expression || '?';
         const op = assertion.operator || 'exists';

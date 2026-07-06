@@ -1,5 +1,5 @@
 import type { TestCase } from '../parser/index.js';
-import type { TestResult, RunnerOptions } from '../runner/types.js';
+import type { TestResult, RunnerOptions, RequestInfo } from '../runner/types.js';
 import { executeTestCase } from '../runner/index.js';
 import type { ScheduleOptions, ScheduleResult, TypeGroupedCases } from './types.js';
 
@@ -87,6 +87,20 @@ export class TestScheduler {
 
   private createErrorResult(testCase: TestCase, error: unknown): TestResult {
     const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    // Build request info for error result
+    let requestInfo: RequestInfo | undefined;
+    if (testCase.protocol === 'http' && testCase.request) {
+      const httpRequest = testCase.request as { method: string; path: string; _baseUrl?: string; headers?: Record<string, string>; body?: unknown };
+      const baseUrl = httpRequest._baseUrl || '';
+      requestInfo = {
+        method: httpRequest.method,
+        url: baseUrl ? `${baseUrl}${httpRequest.path}` : httpRequest.path,
+        headers: httpRequest.headers,
+        body: httpRequest.body
+      };
+    }
+    
     return {
       testCaseId: testCase.id,
       passed: false,
@@ -102,6 +116,7 @@ export class TestScheduler {
         passRate: 0
       },
       extracted: {},
+      request: requestInfo,
       response: {
         statusCode: 0,
         body: null,

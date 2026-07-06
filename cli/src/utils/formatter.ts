@@ -63,8 +63,19 @@ export interface FormattedTestResult {
     type: string;
     message: string;
   }>;
+  request?: {
+    method: string;
+    url: string;
+    headers?: Record<string, string>;
+    body?: unknown;
+  };
+  response?: {
+    status?: number;
+    headers?: Record<string, string | string[]>;
+    body?: unknown;
+    responseTime?: number;
+  };
 }
-
 export function formatTestResult(result: FormattedTestResult, verbose = false): string {
   const status = result.passed
     ? chalk.green('✓ PASS')

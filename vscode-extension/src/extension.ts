@@ -92,6 +92,13 @@ export function activate(context: vscode.ExtensionContext): void {
     })
   );
 
+  // Register setContext command for conditional menu visibility
+  context.subscriptions.push(
+    vscode.commands.registerCommand('tspec.setContext', async (key: string, value: any) => {
+      await vscode.commands.executeCommand('setContext', key, value);
+    })
+  );
+
   // Clear diagnostics when document is closed
   context.subscriptions.push(
     vscode.workspace.onDidCloseTextDocument(document => {

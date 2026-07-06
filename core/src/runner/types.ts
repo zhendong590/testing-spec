@@ -18,12 +18,20 @@ export interface RunnerOptions extends HttpRunnerOptions {
   protocol?: ProtocolType;
 }
 
+export interface RequestInfo {
+  method: string;
+  url: string;
+  headers?: Record<string, string>;
+  body?: unknown;
+}
+
 export interface TestResult {
   testCaseId: string;
   passed: boolean;
   assertions: AssertionResult[];
   summary: AssertionSummary;
   extracted: Record<string, unknown>;
+  request?: RequestInfo;
   response: Response;
   duration: number;
 }

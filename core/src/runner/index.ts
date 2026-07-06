@@ -1,12 +1,13 @@
 import type { TestCase } from '../parser/index.js';
-import type { Assertion } from '../parser/types.js';
+import type { Assertion, HttpRequest } from '../parser/types.js';
 import type { Response, AssertionResult } from '../assertion/types.js';
 import type { ProtocolType } from '../parser/types.js';
 import { runAssertions, getAssertionSummary } from '../assertion/index.js';
-import type { TestRunner, TestResult, RunnerOptions, HttpRunnerOptions } from './types.js';
+import type { TestRunner, TestResult, RunnerOptions, HttpRunnerOptions, RequestInfo } from './types.js';
 import { HttpRunner } from './http/index.js';
 import { registry, ExecutorRegistry, type ExecutorType } from './registry.js';
 import { executeLifecycleActions, createLifecycleContext } from '../lifecycle/index.js';
+import { buildUrl } from './http/request-builder.js';
 
 // Register built-in executors
 registry.register('http', HttpRunner);
@@ -26,6 +27,22 @@ function hasExceptionAssertion(assertions: Assertion[]): boolean {
   return assertions.some(a => a.type === 'exception');
 }
 
+/**
+ * Build request info from test case
+ */
+function buildRequestInfo(testCase: TestCase): RequestInfo | undefined {
+  if (testCase.protocol === 'http' && testCase.request) {
+    const httpRequest = testCase.request as HttpRequest;
+    return {
+      method: httpRequest.method,
+      url: buildUrl(httpRequest),
+      headers: httpRequest.headers,
+      body: httpRequest.body
+    };
+  }
+  return undefined;
+}
+
 export function createRunner(protocol: ProtocolType | null, options: RunnerOptions = {}): TestRunner {
   if (!protocol) {
     throw new Error('Protocol is required');
@@ -41,6 +58,9 @@ export function createRunner(protocol: ProtocolType | null, options: RunnerOptio
 export async function executeTestCase(testCase: TestCase, options: RunnerOptions = {}): Promise<TestResult> {
   const runner = createRunner(testCase.protocol, options);
   const startTime = Date.now();
+  
+  // Build request info before execution
+  const requestInfo = buildRequestInfo(testCase);
   
   // Initialize lifecycle context with test case variables
   const lifecycleContext = createLifecycleContext(testCase.variables || {});
@@ -82,6 +102,7 @@ export async function executeTestCase(testCase: TestCase, options: RunnerOptions
       assertions: [networkErrorAssertion],
       summary: { total: 1, passed: 0, failed: 1, passRate: 0 },
       extracted: lifecycleContext.extractedVars,
+      request: requestInfo,
       response,
       duration
     };
@@ -113,6 +134,7 @@ export async function executeTestCase(testCase: TestCase, options: RunnerOptions
     assertions: assertionResults,
     summary,
     extracted: lifecycleContext.extractedVars,
+    request: requestInfo,
     response,
     duration
   };

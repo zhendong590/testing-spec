@@ -92,7 +92,21 @@ function formatResult(result: TestResult): FormattedTestResult {
       passed: a.passed,
       type: a.type,
       message: a.message
-    }))
+    })),
+    // 新增：请求详情
+    request: result.request ? {
+      method: result.request.method,
+      url: result.request.url,
+      headers: result.request.headers,
+      body: result.request.body
+    } : undefined,
+    // 新增：响应详情
+    response: result.response ? {
+      status: result.response.status || result.response.statusCode,
+      headers: result.response.headers,
+      body: result.response.body,
+      responseTime: result.response.responseTime || result.response.duration
+    } : undefined
   };
 }
 
@@ -564,7 +578,13 @@ async function executeRunViaProxy(
       passed: a.passed,
       type: a.type,
       message: a.message || ''
-    }))
+    })),
+    response: r.response ? {
+      status: r.response.status || r.response.statusCode,
+      headers: r.response.headers,
+      body: r.response.body,
+      responseTime: r.response.responseTime || r.response.duration
+    } : undefined
   }));
   
   const summary: TestResultSummary = proxyResponse.summary 

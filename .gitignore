@@ -71,3 +71,6 @@ vscode-extension/out/
 *.db
 *.sqlite
 *.sqlite3
+
+/tspec-course/
+CLAUDE.md

@@ -95,6 +95,11 @@
         "command": "tspec.refreshTests",
         "title": "Refresh Tests",
         "category": "TSpec"
+      },
+      {
+        "command": "tspec.setContext",
+        "title": "Set Context Key",
+        "category": "TSpec"
       }
     ],
     "configuration": {
@@ -150,6 +155,11 @@
           "type": "boolean",
           "default": true,
           "description": "Show test result status icons in the editor gutter"
+        },
+        "tspec.testing.autoRun": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically run tests when files change (requires watchMode enabled)"
         },
         "tspec.proxy.enabled": {
           "type": "boolean",
