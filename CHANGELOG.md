@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.3] - 2026-07-08
+
+### Added
+
+#### @boolesai/tspec (Core Library)
+
+- **Status Code Assertion**: New `status_code` assertion type for response status validation
+  - Dedicated assertion type to directly validate HTTP response status codes
+  - Supports comparison operators (`equals`, `not_equals`, `greater_than`, `less_than`, etc.)
+  - Extracts status from `_envelope.status`, `response.statusCode`, or `response.status`
+  - Provides clear assertion messages for both pass and fail cases
+  - Default expected value is `200` when not specified
+
+- **Request/Response Details in Test Results**: Enhanced test result outputs with full request and response metadata
+  - New `RequestInfo` interface with method, URL, headers, and body fields
+  - `TestResult` now includes optional `request` field containing the original request details
+  - Automatic request info construction from HTTP test case definitions
+  - Scheduler-propagated request info even in error/failure results
+  - New `response` field in `ProxyTestResult` for proxy-based execution response details
+
+- **Environment Configuration Enhancement**: Added `base_path` field to `EnvironmentConfig`
+  - Direct `base_path` support at the environment configuration level
+  - Backward compatible with `variables.base_path` for URL construction
+
+#### @boolesai/tspec-cli (Command Line Interface)
+
+- **Enhanced Test Output Formatting**: Request and response details in formatted results
+  - `FormattedTestResult` now includes `request` (method, URL, headers, body) and `response` (status, headers, body, responseTime) fields
+  - Proxy execution results now include response detail formatting
+  - Improved debugging and result inspection in CLI output
+
+#### vscode-tspec (VS Code Extension)
+
+- **Context Menu Support**: New `tspec.setContext` command for conditional menu visibility
+- **Auto-Run Configuration**: New `tspec.testing.autoRun` setting to automatically run tests when files change (requires watchMode)
+
+### Changed
+
+- **Test Parser Cleanup**: Removed deprecated `status_code` case from VS Code extension test parser (now handled by core assertion engine)
+- Improved URL construction logic for `base_path` with dual-path compatibility
+
 ## [1.3.2] - 2026-02-27
 
 ### Added
