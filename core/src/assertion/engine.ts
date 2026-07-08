@@ -454,7 +454,28 @@ export function runAssertion(
     // Primary assertion types
     case 'json_path':
       return assertJsonPath(response, assertion);
-    
+
+    case 'status_code': {
+      // status_code 断言：使用 response._envelope 的 status 字段或 response.statusCode
+      const env = response._envelope as Record<string, unknown> | undefined
+      const body = typeof response.body === 'string' ? JSON.parse(response.body) : response.body
+      const data = env || (body as Record<string, unknown>)
+      const actual = (data as any)?.status ?? response.statusCode ?? response.status ?? 0
+      const expected = Number(assertion.expected ?? 200)
+      const operator = (assertion.operator || 'equals') as ComparisonOperator
+      const passed = compareValues(actual, operator, expected)
+      return {
+        passed,
+        type: 'status_code',
+        operator,
+        expected,
+        actual,
+        message: passed
+          ? `status_code ${actual} ${operator} assertion passed`
+          : assertion.message || `status_code: expected ${operator} ${expected}, got ${actual}`
+      }
+    }
+
     case 'string':
       return assertString(response, assertion);
     
