@@ -1,6 +1,6 @@
 {
   "name": "@boolesai/tspec-cli",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "CLI for @boolesai/tspec testing framework",
   "type": "module",
   "bin": {
