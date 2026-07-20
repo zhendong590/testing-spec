@@ -91,7 +91,12 @@ function formatResult(result: TestResult): FormattedTestResult {
     assertions: result.assertions.map(a => ({
       passed: a.passed,
       type: a.type,
-      message: a.message
+      message: a.message,
+      expression: a.expression,
+      operator: a.operator,
+      expected: a.expected,
+      actual: a.actual,
+      path: a.path
     })),
     // 新增：请求详情
     request: result.request ? {
@@ -408,7 +413,12 @@ async function executeSuiteRun(
           assertions: (testResult.assertions || []).map(a => ({
             passed: a.passed,
             type: a.type,
-            message: a.message || ''
+            message: a.message || '',
+            expression: a.expression,
+            operator: a.operator,
+            expected: a.expected,
+            actual: a.actual,
+            path: a.path
           }))
         });
       }
@@ -428,7 +438,12 @@ async function executeSuiteRun(
               assertions: (testResult.assertions || []).map(a => ({
                 passed: a.passed,
                 type: a.type,
-                message: a.message || ''
+                message: a.message || '',
+                expression: a.expression,
+                operator: a.operator,
+                expected: a.expected,
+                actual: a.actual,
+                path: a.path
               }))
             });
           }
@@ -577,7 +592,9 @@ async function executeRunViaProxy(
     assertions: (r.assertions || []).map(a => ({
       passed: a.passed,
       type: a.type,
-      message: a.message || ''
+      message: a.message || '',
+      expected: a.expected,
+      actual: a.actual
     })),
     response: r.response ? {
       status: r.response.status || r.response.statusCode,
