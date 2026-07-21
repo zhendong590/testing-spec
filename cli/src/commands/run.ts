@@ -28,6 +28,17 @@ import { formatTestResults, formatJson, type FormattedTestResult, type TestResul
 import { logger, setLoggerOptions } from '../utils/logger.js';
 import type { OutputFormat } from '../utils/formatter.js';
 
+/**
+ * Exit the process after all pending stdout writes are flushed.
+ * With piped stdout, process.exit() discards buffered output, truncating
+ * large JSON results consumed by programmatic callers (MCP server, CI).
+ */
+function exitAfterFlush(code: number): Promise<never> {
+  return new Promise(() => {
+    process.stdout.write('', () => process.exit(code));
+  });
+}
+
 interface RunOptions {
   output?: OutputFormat;
   concurrency?: string;
@@ -694,7 +705,9 @@ export const runCommand = new Command('run')
         logger.log(result.output);
       }
       
-      process.exit(result.success ? 0 : 1);
+      // Flush stdout before exiting: when stdout is a pipe (non-TTY), writes are
+      // asynchronous and process.exit() would truncate large JSON output (> pipe buffer).
+      await exitAfterFlush(result.success ? 0 : 1);
     } catch (err) {
       spinner?.stop();
       const message = err instanceof Error ? err.message : String(err);
@@ -712,6 +725,6 @@ export const runCommand = new Command('run')
         spinner?.fail('Execution failed');
         logger.error(message);
       }
-      process.exit(2);
+      await exitAfterFlush(2);
     }
   });
