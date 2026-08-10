@@ -18,7 +18,7 @@
     "types": "tsc --emitDeclarationOnly",
     "dev": "vite build --watch",
     "pretest": "npm run build",
-    "test": "node --test \"test/**/*.js\"",
+    "test": "node --test test/*.js",
     "package": "npm run build && npm pack",
     "prepublishOnly": "npm run build"
   },
