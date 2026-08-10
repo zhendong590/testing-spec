@@ -85,10 +85,11 @@ interface FileRunResult {
   parseError?: string;
 }
 
-function parseKeyValue(value: string, previous: Record<string, string> = {}): Record<string, string> {
-  const [key, val] = value.split('=');
-  if (key && val !== undefined) {
-    previous[key] = val;
+export function parseKeyValue(value: string, previous: Record<string, string> = {}): Record<string, string> {
+  // 按第一个 = 切分：值中可含 =（base64 padding、JWT 等），不可用 split('=')
+  const idx = value.indexOf('=');
+  if (idx > 0) {
+    previous[value.slice(0, idx)] = value.slice(idx + 1);
   }
   return previous;
 }

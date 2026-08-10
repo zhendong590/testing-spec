@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { basename, dirname, join } from 'path';
 import { validateCommand } from './commands/validate.js';
 import { runCommand } from './commands/run.js';
 import { parseCommand } from './commands/parse.js';
@@ -29,4 +29,9 @@ program.addCommand(mcpCommand);
 program.addCommand(pluginListCommand);
 program.addCommand(pluginInstallCommand);
 
-await program.parseAsync();
+export { parseKeyValue } from './commands/run.js';
+
+const __entryName = process.argv[1] ? basename(process.argv[1]) : '';
+if (__entryName === 'tspec' || __entryName === 'tspec.js' || process.argv[1] === __filename) {
+  await program.parseAsync();
+}
