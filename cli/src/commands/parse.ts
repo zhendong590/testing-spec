@@ -16,6 +16,7 @@ import { discoverTSpecFiles } from '../utils/files.js';
 import { formatParsedTestCase, formatJson } from '../utils/formatter.js';
 import { logger, setLoggerOptions } from '../utils/logger.js';
 import type { OutputFormat } from '../utils/formatter.js';
+import { parseKeyValue } from './run.js';
 
 interface ParseOptions {
   output?: OutputFormat;
@@ -45,14 +46,6 @@ export interface ParseExecutionResult {
     parseErrors: Array<{ file: string; error: string }>;
     summary: { totalFiles: number; totalTestCases: number; parseErrors: number };
   };
-}
-
-function parseKeyValue(value: string, previous: Record<string, string> = {}): Record<string, string> {
-  const [key, val] = value.split('=');
-  if (key && val !== undefined) {
-    previous[key] = val;
-  }
-  return previous;
 }
 
 /**

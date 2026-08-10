@@ -17,3 +17,7 @@ test('空值合法（墓碑注入 -e name=）', () => {
 test('无 = 的输入忽略', () => {
   assert.deepEqual(parseKeyValue('garbage', { keep: '1' }), { keep: '1' })
 })
+
+test('空 key（=value）忽略', () => {
+  assert.deepEqual(parseKeyValue('=value', { keep: '1' }), { keep: '1' })
+})
