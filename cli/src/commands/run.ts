@@ -85,10 +85,12 @@ interface FileRunResult {
   parseError?: string;
 }
 
-function parseKeyValue(value: string, previous: Record<string, string> = {}): Record<string, string> {
-  const [key, val] = value.split('=');
-  if (key && val !== undefined) {
-    previous[key] = val;
+export function parseKeyValue(value: string, previous: Record<string, string> = {}): Record<string, string> {
+  // Split on the first '=' only: the value may itself contain '='
+  // (base64 padding, JWT, etc.), so split('=') would truncate it.
+  const idx = value.indexOf('=');
+  if (idx > 0) {
+    previous[value.slice(0, idx)] = value.slice(idx + 1);
   }
   return previous;
 }

@@ -27,6 +27,7 @@ export interface RunExecutionResult {
         }>;
     };
 }
+export declare function parseKeyValue(value: string, previous?: Record<string, string>): Record<string, string>;
 /**
  * Execute test cases - core logic extracted for MCP integration
  */
