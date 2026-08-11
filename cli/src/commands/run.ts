@@ -86,7 +86,8 @@ interface FileRunResult {
 }
 
 export function parseKeyValue(value: string, previous: Record<string, string> = {}): Record<string, string> {
-  // 按第一个 = 切分：值中可含 =（base64 padding、JWT 等），不可用 split('=')
+  // Split on the first '=' only: the value may itself contain '='
+  // (base64 padding, JWT, etc.), so split('=') would truncate it.
   const idx = value.indexOf('=');
   if (idx > 0) {
     previous[value.slice(0, idx)] = value.slice(idx + 1);

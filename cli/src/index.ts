@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { readFileSync } from 'fs';
+import { readFileSync, realpathSync } from 'fs';
 import { fileURLToPath } from 'url';
-import { basename, dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
 import { validateCommand } from './commands/validate.js';
 import { runCommand } from './commands/run.js';
 import { parseCommand } from './commands/parse.js';
@@ -31,7 +31,16 @@ program.addCommand(pluginInstallCommand);
 
 export { parseKeyValue } from './commands/run.js';
 
-const __entryName = process.argv[1] ? basename(process.argv[1]) : '';
-if (__entryName === 'tspec' || __entryName === 'tspec.js' || process.argv[1] === __filename) {
+// Only run the CLI when executed as the program entry (import.meta.url match)
+// or via the bin wrapper (bin/tspec.js re-exports this module). Library imports
+// (e.g. tests) skip parsing so the caller's argv is left untouched.
+const __isEntry = (() => {
+  if (!process.argv[1]) return false;
+  // realpath both sides: npm global install exposes bin/tspec.js via a symlink
+  // (e.g. /usr/local/bin/tspec) while import.meta.url resolves to the real path.
+  const entry = realpathSync(resolve(process.argv[1]));
+  return entry === __filename || entry === realpathSync(resolve(__dirname, '../bin/tspec.js'));
+})();
+if (__isEntry) {
   await program.parseAsync();
 }
